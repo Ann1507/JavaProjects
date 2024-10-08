@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+	form fieldset {
+		width : 40%;
+	} 
+	form fieldset label {
+		display : block;
+		/*width : 50%;
+		float :left;*/
+	}
+	form fieldset input, form fieldset textarea {
+		width : 100%;
+	}
+</style>
+<script>
+	const COURSES_SERVICE_BASE_ADDRESS='../api/course';//адрес сервиса
+	//Загружает курс по id извлеченному из адресной строки
+	// и заполняет элементы управления формы значениями свойств этого курса
+	async function loadCourse(){
+		// Получить массив параметров из адресной строки ?id=5&p2=10
+		var params = window //Глобальный объект 
+		    .location       //объект, дающий доступ к адресной строке
+		    .search         //часть адресной строки следующей после ?
+		    .replace('?','')//удаляем "?"
+		    .split('&')     // преобразуем оставшуюся строку в массив строк разрезая ее по символу &
+		    .reduce(        //для каждого параметра выполняем функцию
+		        //Для каждого параметра добавляет в результирующий объект свойство с именем совпадающим с именем параметра
+		        function(p,e){
+		            var a = e.split('='); //разрезаем строку на массив строк по символу =
+		            p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);//добавляем в результирующий объект свойство со значением
+		            return p;
+		        },
+		        {}
+		    );
+		//console.log(params.id)
+		if(params.id){ //если в параметрах есть свойство id выполняем запрос к сервису
+			//Ассинхронный запрос к сервису с параметром id методом get по протоколу http
+			let response=await fetch(COURSES_SERVICE_BASE_ADDRESS+"/"+params.id,{ 
+				method : "GET",
+				headers : { Accept : "application/json"}
+			});
+			//console.log(r)
+			//если пришел ответ
+			if(response.ok){
+				//Ассинхронно получаем результат который из формата json реобразуем в объект javaScript
+				let course = await response.json();
+				//console.log(course);
+				//Перебираем в цикле все свойства объекта course
+				for(let p in course){
+					//console.log(p);
+					// Ищем на странице визуальный элемент id которого совпадает с именем свойства объекта
+					let e=document.getElementById(p);
+					// Если такой элемент найден копируем значение свойства объекта course в значение этого элемента
+					if (e) e.value=course[p];
+				}
+			}
+		}
+	}
+	async function saveCourse(queue){
+		let elms=document.querySelectorAll("form input,form textarea");
+		let course={};
+		elms.forEach(el=>{if(el.id)course[el.id]=el.value})
+		console.log(course)
+		let address=COURSES_SERVICE_BASE_ADDRESS
+		if (queue) address+="/queue"
+		let response=await fetch(address, { 
+				method : "POST",
+				headers : { 
+					"Accept" : "application/json", 
+					"Content-Type" : "application/json"
+				},
+				 
+				body : JSON.stringify(course)  
+			});
+			
+		if(response.ok){
+			location.href="courses.html"
+			
+		} else
+			alert(response.statusText)
+	}
+	window.onload=loadCourse;
+</script>
+</head>
+<body>
+	<h1>Курс</h1>
+	<form>
+		<input type="hidden" id="id" value="0">
+		<fieldset>
+			<div>
+				<label>Название: </label>
+				<input type="text" id="title">
+			</div>
+			<div>
+				<label>Длительность: </label>
+				<input type="number" id="length">
+			</div>
+			<div>
+				<label>Описание: </label>
+				<textarea id="description" rows="7"></textarea>
+			</div>
+			<div>
+				<input type="button" onclick="saveCourse(false)" value="Сохранить">
+				<input type="button" onclick="saveCourse(true)" value="Сохранить в очередь">
+				<input type="button" onclick="history.back()"value="Отменить">
+			</div>
+		</fieldset>
+	</form>
+</body>
+</html>

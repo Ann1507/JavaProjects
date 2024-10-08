@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>Привет!</h1>
+	<!--
+		Тег form группирует элементы управления для отправки на сервер
+		Атрибут action указыв. адрес серверн.программы
+		атрибут method указ.команду протокола http с пом.которой данные будут отправлены на сервер
+	 -->
+	<form method="POST" action="hello">
+		<label>Ваше имя:</label><!-- Подсказка -->
+		<input type="text" name="userName"><!--Текстовое поле для ввода имени -->
+		<label>Возраст: </label>
+		<input type=number name=age>
+		<input type="submit" value="Привет"><!--Кнопка для отправки данных на сервер -->
+	</form>
+</body>
+</html>

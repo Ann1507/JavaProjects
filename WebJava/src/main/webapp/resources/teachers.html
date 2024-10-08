@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+	const TEACHERS_SERVICE_BASE_ADDRESS='../api/teacher';
+	async function updateTeacherList(){
+		//найти в html элемент с id courses,(# означает что поиск идет по id)
+		let tf=document.querySelector("#teachers"); 
+		tf.innerHTML="<tr><th>Имя</th><th>Адрес</th><th>Телефон</th><th></th></tr>";
+		// Выполняем асихронный запрос к рест сервису по протоку http методом get
+		//асинхронность означает отсутствие блокировки в процессе выполнения запроса
+		let response=await fetch(TEACHERS_SERVICE_BASE_ADDRESS,{
+			method : "GET",
+			headers : { Accept : "application/json"}
+		});
+		//console.log(r)
+		if(response.ok){
+			//получение ответа от сервиса в формате json и его преобразование в объект javascript
+			let teachers = await response.json();
+			//ищем список строк (tbody) таблицы с id courses
+			let tbody=document.querySelector("#teachers tbody");
+			//перебираем список курсов,полученных от сервиса 
+			// для каждого курса вызываем нашу функцию rowCourse
+			// которая  для каждого объекта курса создает строку html(tr)
+			// и этот tr методом append добавляется в список строк нашей таблицы
+			teachers.forEach(teacher => tbody.append(rowTeacher(teacher)));
+		}
+	}
+	
+	function rowTeacher(teacher){
+		// создаем элемент tr
+		let tr=document.createElement("tr"); //tr строка,td ячейка в строке таблицы
+		//Внутрь содержимого элемента tr записывем три ячейки (td) содержащие название,длит-то  и описание курсов
+		tr.innerHTML="<td>"+ teacher.name+"</td>"+"<td>"+ teacher.addr+"</td>"+"<td>"+ teacher.phone+"</td>"+
+			"<td>"+"<a href='editTeacher.html?id="+teacher.id+"'>Изменить</a>"+"&nbsp;<a href='javascript:removeTeacher("+teacher.id+")'>Удалить</a>"+"</td>"
+		return tr;
+	}
+	//Удаляет курс с указанным id
+	async function removeTeacher(id){
+		let response=await fetch(TEACHERS_SERVICE_BASE_ADDRESS+'/'+id,{
+			method : "DELETE"
+		});
+		//console.log(r)
+		if(response.ok){
+			await updateTeacherList();
+		}
+		
+	}
+	//указать что функция updateCourseList будет автоматически вызываться при загрузке страницы
+	window.onload=updateTeacherList;
+	//Сделать страницу отображ.список преподавателей,используя сервис api/teacher
+</script>
+</head>
+<body>
+	<h1>
+		Преподаватели
+	</h1>
+	<table id="teachers" border="1">
+		
+	</table>
+	<a href="editTeacher.html">Добавить...</a>
+	<a href="deleteTeacher.html">Удалить...</a>
+</body>
+</html>
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

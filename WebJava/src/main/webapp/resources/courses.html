@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+	// Создаем констанкту с адресом рест сервиса
+	const COURSES_SERVICE_BASE_ADDRESS='../api/course';
+	//создаем ассинхронную функцию,кот.будет обновлять таблицу со списком курсов данными полученными от рест сервиса
+	async function updateCourseList(){
+		//найти в html элемент с id courses,(# означает что поиск идет по id)
+		let t=document.querySelector("#courses"); 
+		// innerhtml это текст м/у открывающим и закрывающим тегом html
+		t.innerHTML="<tr><th>Название</th><th>Длительность</th><th>Описание</th><th>Операции</th></tr>";
+		// Выполняем асихронный запрос к рест сервису по протоку http методом get
+		//асинхронность означает отсутствие блокировки в процессе выполнения запроса
+		let response=await fetch(COURSES_SERVICE_BASE_ADDRESS,{
+			method : "GET",
+			headers : { Accept : "application/json"}
+		});
+		//console.log(r)
+		if(response.ok){
+			//получение ответа от сервиса в формате json и его преобразование в объект javascript
+			let courses = await response.json();
+			//ищем список строк (tbody) таблицы с id courses
+			let tbody=document.querySelector("#courses tbody");
+			//перебираем список курсов,полученных от сервиса 
+			// для каждого курса вызываем нашу функцию rowCourse
+			// которая  для каждого объекта курса создает строку html(tr)
+			// и этот tr методом append добавляется в список строк нашей таблицы
+			courses.forEach(course => tbody.append(rowCourse(course)));
+		}
+		
+	}
+	//Создает для объекта курса строку tr,содержащую информац об этом курсе
+	function rowCourse(course){
+		// создаем элемент tr
+		let tr=document.createElement("tr"); //tr строка,td ячейка в строке таблицы
+		//Внутрь содержимого элемента tr записывем три ячейки (td) содержащие название,длит-то  и описание курсов
+		tr.innerHTML="<td>"+ course.title+"</td>"+"<td>"+ course.length+"</td>"+"<td>"+ course.description+"</td>"+
+			"<td>"+"<a href='editCourse.html?id="+course.id+"'>Изменить</a>"+
+			"&nbsp;<a href='javascript:removeCourse("+course.id+")'>Удалить</a>"+
+			"&nbsp;<a href='javascript:removeCourseByQueue("+course.id+")'>Удалить(очередь)</a>"+
+			"</td>"
+		return tr;
+	}
+	//Удаляет курс с указанным id
+	async function removeCourse(id){
+		let response=await fetch(COURSES_SERVICE_BASE_ADDRESS+'/'+id,{
+			method : "DELETE"
+		});
+		//console.log(r)
+		if(response.ok){
+			await updateCourseList();
+		}
+		
+	}
+	
+	async function removeCourseByQueue(id){
+		let response=await fetch(COURSES_SERVICE_BASE_ADDRESS+'/queue/'+id,{
+			method : "DELETE"
+		});
+		//console.log(r)
+		if(response.ok){
+			await updateCourseList();
+		}
+		
+	}
+	//указать что функция updateCourseList будет автоматически вызываться при загрузке страницы
+	window.onload=updateCourseList;
+	//Сделать страницу отображ.список преподавателей,используя сервис api/teacher
+</script>
+</head>
+<body>
+	<h1>
+		Курсы
+	</h1>
+	<table id="courses" border="1">
+		
+	</table>
+	<a href="editCourse.html">Добавить...</a>
+
+</body>
+</html>

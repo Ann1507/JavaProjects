@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Build-Jdk-Spec: 17
+Class-Path: libs/activemq-broker-5.15.7.jar libs/activemq-client-5.15.7.
+ jar libs/geronimo-jms_1.1_spec-1.1.1.jar libs/hawtbuf-1.11.jar libs/ger
+ onimo-j2ee-management_1.1_spec-1.0.1.jar libs/activemq-openwire-legacy-
+ 5.15.7.jar libs/guava-18.0.jar libs/jackson-databind-2.9.6.jar libs/jac
+ kson-annotations-2.9.0.jar libs/jackson-core-2.9.6.jar libs/spring-cont
+ ext-6.1.3.jar libs/spring-aop-6.1.3.jar libs/spring-beans-6.1.3.jar lib
+ s/spring-core-6.1.3.jar libs/spring-jcl-6.1.3.jar libs/spring-expressio
+ n-6.1.3.jar libs/micrometer-observation-1.12.2.jar libs/micrometer-comm
+ ons-1.12.2.jar libs/mysql-connector-j-8.0.33.jar libs/protobuf-java-3.2
+ 1.9.jar libs/hibernate-core-6.4.4.Final.jar libs/jakarta.persistence-ap
+ i-3.1.0.jar libs/jakarta.transaction-api-2.0.1.jar libs/jboss-logging-3
+ .5.0.Final.jar libs/hibernate-commons-annotations-6.0.6.Final.jar libs/
+ jandex-3.1.2.jar libs/classmate-1.5.1.jar libs/byte-buddy-1.14.11.jar l
+ ibs/jakarta.xml.bind-api-4.0.0.jar libs/jakarta.activation-api-2.1.0.ja
+ r libs/jaxb-runtime-4.0.2.jar libs/jaxb-core-4.0.2.jar libs/angus-activ
+ ation-2.0.0.jar libs/txw2-4.0.2.jar libs/istack-commons-runtime-4.1.1.j
+ ar libs/jakarta.inject-api-2.0.1.jar libs/antlr4-runtime-4.13.0.jar lib
+ s/hibernate-jpa-2.1-api-1.0.2.Final.jar libs/spring-orm-6.1.3.jar libs/
+ spring-jdbc-6.1.3.jar libs/spring-tx-6.1.3.jar libs/gson-2.11.0.jar lib
+ s/error_prone_annotations-2.27.0.jar libs/spring-data-jpa-3.2.3.jar lib
+ s/spring-data-commons-3.2.3.jar libs/jakarta.annotation-api-2.0.0.jar l
+ ibs/slf4j-api-2.0.2.jar
+Main-Class: ru.specialist.activemqclient.App
+Created-By: Maven Integration for Eclipse
+

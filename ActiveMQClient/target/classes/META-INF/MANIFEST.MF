@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Build-Jdk-Spec: 17
+Class-Path: libs/activemq-broker-5.15.7.jar libs/activemq-client-5.15.7.
+ jar libs/slf4j-api-1.7.25.jar libs/geronimo-jms_1.1_spec-1.1.1.jar libs
+ /hawtbuf-1.11.jar libs/geronimo-j2ee-management_1.1_spec-1.0.1.jar libs
+ /activemq-openwire-legacy-5.15.7.jar libs/guava-18.0.jar libs/jackson-d
+ atabind-2.9.6.jar libs/jackson-annotations-2.9.0.jar libs/jackson-core-
+ 2.9.6.jar
+Main-Class: ru.specialist.activemqclient.App
+Created-By: Maven Integration for Eclipse
+

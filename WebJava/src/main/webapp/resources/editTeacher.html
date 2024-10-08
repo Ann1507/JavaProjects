@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+	form fieldset {
+		width : 40%;
+	} 
+	form fieldset label {
+		display : block;
+		/*width : 50%;
+		float :left;*/
+	}
+	form fieldset input, form fieldset textarea {
+		width : 100%;
+	}
+</style>
+<script>
+	const TEACHERS_SERVICE_BASE_ADDRESS='../api/teacher';//адрес сервиса
+	//Загружает курс по id извлеченному из адресной строки
+	// и заполняет элементы управления формы значениями свойств этого курса
+	async function loadTeacher(){
+		// Получить массив параметров из адресной строки ?id=5&p2=10
+		var params = window //Глобальный объект 
+		    .location       //объект, дающий доступ к адресной строке
+		    .search         //часть адресной строки следующей после ?
+		    .replace('?','')//удаляем "?"
+		    .split('&')     // преобразуем оставшуюся строку в массив строк разрезая ее по символу &
+		    .reduce(        //для каждого параметра выполняем функцию
+		        //Для каждого параметра добавляет в результирующий объект свойство с именем совпадающим с именем параметра
+		        function(p,e){
+		            var a = e.split('='); //разрезаем строку на массив строк по символу =
+		            p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);//добавляем в результирующий объект свойство со значением
+		            return p;
+		        },
+		        {}
+		    );
+		//console.log(params.id)
+		if(params.id){ //если в параметрах есть свойство id выполняем запрос к сервису
+			//Ассинхронный запрос к сервису с параметром id методом get по протоколу http
+			let response=await fetch(TEACHERS_SERVICE_BASE_ADDRESS+"/"+params.id,{ 
+				method : "GET",
+				headers : { Accept : "application/json"}
+			});
+			//console.log(r)
+			//если пришел ответ
+			if(response.ok){
+				//Ассинхронно получаем результат который из формата json реобразуем в объект javaScript
+				let teacher = await response.json();
+				//console.log(course);
+				//Перебираем в цикле все свойства объекта course
+				for(let p in teacher){
+					//console.log(p);
+					// Ищем на странице визуальный элемент id которого совпадает с именем свойства объекта
+					let e=document.getElementById(p);
+					// Если такой элемент найден копируем значение свойства объекта course в значение этого элемента
+					if (e) e.value=teacher[p];
+				}
+			}
+		}
+	}
+	async function saveTeacher(){
+		let elms=document.querySelectorAll("form input,form textarea");
+		let teacher={};
+		elms.forEach(el=>{if(el.id)teacher[el.id]=el.value})
+		console.log(teacher)
+		let response=await fetch(TEACHERS_SERVICE_BASE_ADDRESS,{ 
+				method : "POST",
+				headers : { 
+					"Accept" : "application/json", 
+					"Content-Type" : "application/json"
+				},
+				 
+				body : JSON.stringify(teacher)  
+			});
+			
+		if(response.ok){
+			location.href="teachers.html"
+			
+		} else
+			alert(response.statusText)
+	}
+	window.onload=loadTeacher;
+</script>
+</head>
+<body>
+	<h1>Преподаватель</h1>
+	<form>
+		<input type="hidden" id="id" value="0">
+		<fieldset>
+			<div>
+				<label>Имя: </label>
+				<input type="text" id="name">
+			</div>
+			<div>
+				<label>Адрес: </label>
+				<textarea id="addr" rows="7"></textarea>
+			</div>
+			<div>
+				<label>Телефон: </label>
+				<input type="phone" id="phone">
+			</div>
+			<div>
+				<input type="button" onclick="saveTeacher()" value="Сохранить">&nbsp;
+				<input type="button" onclick="history.back()"value="Отменить">
+			</div>
+		</fieldset>
+	</form>
+</body>
+</html>
