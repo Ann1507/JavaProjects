@@ -66,7 +66,7 @@
 		elms.forEach(el=>{if(el.id)course[el.id]=el.value})
 		console.log(course)
 		let address=COURSES_SERVICE_BASE_ADDRESS
-		if (queue) address+="/queue"
+		if (queue) address+="/"+queue
 		let response=await fetch(address, { 
 				method : "POST",
 				headers : { 
@@ -105,7 +105,8 @@
 			</div>
 			<div>
 				<input type="button" onclick="saveCourse(false)" value="Сохранить">
-				<input type="button" onclick="saveCourse(true)" value="Сохранить в очередь">
+				<input type="button" onclick="saveCourse('queue')" value="Сохранить в очередь в activeMQ">
+				<input type="button" onclick="saveCourse('kafka')" value="Сохранить в очередь в kafka">
 				<input type="button" onclick="history.back()"value="Отменить">
 			</div>
 		</fieldset>

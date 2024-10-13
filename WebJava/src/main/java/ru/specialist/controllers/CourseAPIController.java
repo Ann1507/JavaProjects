@@ -1,8 +1,14 @@
 package ru.specialist.controllers;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -96,6 +102,34 @@ public class CourseAPIController {
 		producer.send(topic,msg);//отправляем сообщение в конкр.топик
 		connection.close();
 		
+	}
+	
+	@Value("${kafkaServer}")//обращение к коллекции параметров прочитанной из properties файлов
+	private String kafkaServer;
+	@RequestMapping(value="/kafka",method=RequestMethod.POST)//api/course/kafka
+	public Course saveUsingKafka(@RequestBody Course course) {
+		Properties props = new Properties();//Создание коллекции настроек(key-value)
+		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");//адрес сервера кафки
+		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());//задаем параметр класс сериалиазотра ключа(объект преобр в последовательность байтов) для отправки сообщений в кафку
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());//задаем класс сериализатор значения
+		
+		Producer<String,String> producer = new KafkaProducer<>(props);//создаем объект кот будет отправлять сообщения кот будет отправлять сообщения в топик кафки с указанием коллекции параметров
+		Gson g=new GsonBuilder().setPrettyPrinting().create();//создаем объект котор.будет сериализовать наш курс
+		String json=g.toJson(course);//сериализуем курс
+		ProducerRecord<String,String> message = 
+				new ProducerRecord<>("POSTCourse", String.valueOf(course.getId()),json);//создаем сообщение(с указанием топика,ключа и значение)
+		//отправляем сообщение
+		producer.send(message,(metadata,exception)->{//функция (лямбда) кот будет вызвана когда сообщение отправлено
+			if (exception!=null) //если была ошибка (exception)
+				exception.printStackTrace();//напечатать подроб.инф.об ошибке
+			else 
+				System.out.printf("message send to topic %s partition %s offset %s\n",
+						metadata.topic(),metadata.partition(),metadata.offset());//если не было ошибок при отправке сообщения из объекта метадата извлекаем название топика, партицию и смещение куда сообщение попало
+		});
+		producer.close();//закрываем продюсера объект
+		
+		
+		return course;
 	}
 }
 /*{
