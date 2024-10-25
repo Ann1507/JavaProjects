@@ -1,0 +1,1 @@
+update product set categoryId=null where productId=1

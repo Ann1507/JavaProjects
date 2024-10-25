@@ -1,0 +1,3 @@
+[submodule "northwind"]
+	path = northwind
+	url = https://github.com/sealbro/northwind
