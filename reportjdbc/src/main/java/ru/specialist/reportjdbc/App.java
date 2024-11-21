@@ -2,7 +2,7 @@ package ru.specialist.reportjdbc;
 import java.sql.*;
 
 public class App {
-	public static final String DRIVER_CLASS="com.mysql.jdbc.Driver";
+	public static final String DRIVER_CLASS="com.mysql.cj.jdbc.Driver";
 	public static final String CONNECTION_STRING=
 			"jdbc:mysql://localhost:3306/northwind?user=root&password=demo";
 	
