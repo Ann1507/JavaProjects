@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="js/sockjs.js"></script>
+<script src="js/stomp.js"></script>
+<script>
+	// Создаем констанкту с адресом рест сервиса
+	const COURSES_SERVICE_BASE_ADDRESS='http://localhost:8080/courses';
+	//создаем ассинхронную функцию,кот.будет обновлять таблицу со списком курсов данными полученными от рест сервиса
+	async function updateCourseList(){
+		//найти в html элемент с id courses,(# означает что поиск идет по id)
+		let t=document.querySelector("#courses"); 
+		// innerhtml это текст м/у открывающим и закрывающим тегом html
+		t.innerHTML="<tr><th>Название</th><th>Длительность</th><th>Описание</th><th>Операции</th></tr>";
+		var socket=new SockJS (COURSES_SERVICE_BASE_ADDRESS);// открыть соединение с сервером
+		var stompClient=Stomp.over(socket); //тспользовать stomp поверх открытого соединения,stomp - simple text oriented message protocol
+		//-это правило обмена сообщениями м/у клиентом и сервером,транспортн.протокол ws
+		stompClient.connect({},function(frame){
+			 console.log("connected: "+frame);
+			 stompClient.subscribe("/course/all", function(outputMessage){//подписка на событие получения сообщения в очереди клиента 
+				
+				let courses=JSON.parse(outputMessage.body)//преобразование сообщения из формата json в объект javascript
+				let tbody=document.querySelector("#courses tbody");//найти таблицу в html c id courses
+				courses.forEach(course => tbody.append(rowCourse(course)));//заполенение этой таблицы данными курсов
+			 });
+		});
+				
+	}
+	//Создает для объекта курса строку tr,содержащую информац об этом курсе
+	function rowCourse(course){
+		// создаем элемент tr
+		let tr=document.createElement("tr"); //tr строка,td ячейка в строке таблицы
+		//Внутрь содержимого элемента tr записывем три ячейки (td) содержащие название,длит-то  и описание курсов
+		tr.innerHTML="<td>"+ course.title+"</td>"+"<td>"+ course.length+"</td>"+"<td>"+ course.description+"</td>"+
+			"<td>"+"<a href='editCourse.html?id="+course.id+"'>Изменить</a>"+
+			"&nbsp;<a href='javascript:removeCourse("+course.id+")'>Удалить</a>"+
+			"&nbsp;<a href='javascript:removeCourseByQueue("+course.id+")'>Удалить(очередь)</a>"+
+			"</td>"
+		return tr;
+	}
+	//Удаляет курс с указанным id
+	async function removeCourse(id){
+		let response=await fetch(COURSES_SERVICE_BASE_ADDRESS+'/'+id,{
+			method : "DELETE"
+		});
+		//console.log(r)
+		if(response.ok){
+			await updateCourseList();
+		}
+		
+	}
+	
+	async function removeCourseByQueue(id){
+		let response=await fetch(COURSES_SERVICE_BASE_ADDRESS+'/queue/'+id,{
+			method : "DELETE"
+		});
+		//console.log(r)
+		if(response.ok){
+			await updateCourseList();
+		}
+		
+	}
+	//указать что функция updateCourseList будет автоматически вызываться при загрузке страницы
+	window.onload=updateCourseList;
+	//Сделать страницу отображ.список преподавателей,используя сервис api/teacher
+</script>
+</head>
+<body>
+	<h1>
+		Курсы
+	</h1>
+	<table id="courses" border="1">
+		
+	</table>
+	<a href="editCourse.html">Добавить...</a>
+
+</body>
+</html>

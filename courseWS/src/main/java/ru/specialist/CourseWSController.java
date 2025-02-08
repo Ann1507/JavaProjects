@@ -11,15 +11,15 @@ import org.springframework.stereotype.Controller;
 import ru.specialist.dao.Course;
 import ru.specialist.dao.CourseDao;
 
-@Controller
+@Controller //контроллер обрабатывает запросы
 
 public class CourseWSController {
 	
-	@Autowired
+	@Autowired //автоматическая инициализация поля с ссылкой на репозиторий для работы с бд
 	private CourseDao courseDao;
 	
-	@MessageMapping("/courses")
-	@SendTo("/course/all")
+	@MessageMapping("/courses")//адрес, запросы по кот будут отправляться в этот метод
+	@SendTo("/course/all") // имя очереди,куда будут отправляться ответы на клиента
 	public List<Course> course (@Payload Message message) {
 		return courseDao.findAll();
 	}
