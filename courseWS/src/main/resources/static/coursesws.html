@@ -7,7 +7,7 @@
 <script src="js/stomp.js"></script>
 <script>
 	// Создаем констанкту с адресом рест сервиса
-	const COURSES_SERVICE_BASE_ADDRESS='http://localhost:8080/courses';
+	const COURSES_SERVICE_BASE_ADDRESS='http://localhost:8080/ws';
 	//создаем ассинхронную функцию,кот.будет обновлять таблицу со списком курсов данными полученными от рест сервиса
 	async function updateCourseList(){
 		//найти в html элемент с id courses,(# означает что поиск идет по id)
@@ -15,17 +15,18 @@
 		// innerhtml это текст м/у открывающим и закрывающим тегом html
 		t.innerHTML="<tr><th>Название</th><th>Длительность</th><th>Описание</th><th>Операции</th></tr>";
 		var socket=new SockJS (COURSES_SERVICE_BASE_ADDRESS);// открыть соединение с сервером
-		var stompClient=Stomp.over(socket); //тспользовать stomp поверх открытого соединения,stomp - simple text oriented message protocol
+		var stompClient=StompJs.Stomp.over(socket); //тспользовать stomp поверх открытого соединения,stomp - simple text oriented message protocol
 		//-это правило обмена сообщениями м/у клиентом и сервером,транспортн.протокол ws
-		stompClient.connect({},function(frame){
-			 console.log("connected: "+frame);
-			 stompClient.subscribe("/course/all", function(outputMessage){//подписка на событие получения сообщения в очереди клиента 
+		stompClient.connect({},function(){
+			 
+			 stompClient.subscribe("/course/0/course/all", function(outputMessage){//подписка на событие получения сообщения в очереди клиента 
 				
 				let courses=JSON.parse(outputMessage.body)//преобразование сообщения из формата json в объект javascript
 				let tbody=document.querySelector("#courses tbody");//найти таблицу в html c id courses
 				courses.forEach(course => tbody.append(rowCourse(course)));//заполенение этой таблицы данными курсов
 			 });
-		});
+			 stompClient.send("/app/courses",{}, JSON.stringify({id:0}));//отправляем запрос на сервер
+		}, e=>console.log(e));
 				
 	}
 	//Создает для объекта курса строку tr,содержащую информац об этом курсе

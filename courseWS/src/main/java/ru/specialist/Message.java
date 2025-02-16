@@ -1,24 +1,21 @@
 package ru.specialist;
 
+import org.springframework.data.annotation.Id;
+
 import ru.specialist.dao.Course;
 //Структура сообщений котор. будут обмениваться клиент и сервер
 public class Message {
-	//Команда серверу от клиента
-	private String command;
-	//курс котор клиент передает серверу
-	private Course course;
-	public String getCommand() {
-		return command;
+	@Id
+	private String id;
+
+	public String getId() {
+		return id;
 	}
-	public void setCommand(String command) {
-		this.command = command;
+
+	public void setId(String id) {
+		this.id = id;
 	}
-	public Course getCourse() {
-		return course;
-	}
-	public void setCourse(Course course) {
-		this.course = course;
-	}
+	
 	
 	
 }
