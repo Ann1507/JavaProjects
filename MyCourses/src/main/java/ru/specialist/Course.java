@@ -1,6 +1,6 @@
 package ru.specialist;
 
-public class Course {
+public class Course implements Comparable<Course> {
 	private String title;
 	private int length;
 	private String description;
@@ -32,6 +32,17 @@ public class Course {
 	@Override
 	public String toString() {
 		return String.format("%-20s %3d %s",getTitle(),getLength(),getDescription());
+	}
+	@Override
+	public int compareTo(Course o) {
+		//задача этого метода сравнить объект this с параметром о,
+		// метод должен вернуть положительное число если  this>o
+		//вернуть 0 если this=o
+		//вернуть отриц.число если this<o
+		//this.getLength()
+		//o.getLength()
+		//this.getTitle()
+		return this.getLength()-o.getLength();
 	}
 	
 }
