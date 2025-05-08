@@ -23,14 +23,14 @@ public class App {
 		 System.out.println(course);
 		 dao.insert(course);
 		 System.out.println(course);*/
-		 //for(Course course1:dao.findAll())
-			// System.out.println(course1);
+		 for(Course course1:dao.findAll())
+			System.out.println(course1);
 		 	 	 
 		 //System.out.println(course);
 		 //for(Course course:dao.findByTitle("web"))
 			 // System.out.println(course);
-		 for(Course course:dao.findByLength(40))
-			  System.out.println(course);
+		 /*for(Course course:dao.findByLength(40))
+			  System.out.println(course);*/
 		 
 	}
 
