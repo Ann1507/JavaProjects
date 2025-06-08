@@ -4,10 +4,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ru.specialist.dao.Course;
 import ru.specialist.dao.CourseDao;
 
+import java.util.Locale;
+
 import org.springframework.context.ApplicationContext;
 public class App {
 
 	public static void main(String[] args) {
+		Locale.setDefault(Locale.US);
 		// Создается контейнер спринга в соответсвии с конфигурацией класса DaoConfig
 		 ApplicationContext context=new AnnotationConfigApplicationContext(DaoConfig.class);
 		 //Получаем ссылку на реализацию репозитория по типу интерфейса CourceDao

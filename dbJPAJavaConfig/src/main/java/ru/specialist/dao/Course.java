@@ -3,7 +3,7 @@
 package ru.specialist.dao;
 import jakarta.persistence.*;//java enterprise edition-пакет с аннотациями для разметки класса сущности
 @Entity//обозн класс сущности(объекты кот.будут загружаться из БД и туда сохраняться)
-@Table(name="courses")//указывает в какую таблицу будут сохраняться объекты этого класса сущности
+@Table(name="Courses"/*, schema="public"*/)//указывает в какую таблицу будут сохраняться объекты этого класса сущности
 public class Course {
 	private int id;
 	private String title;

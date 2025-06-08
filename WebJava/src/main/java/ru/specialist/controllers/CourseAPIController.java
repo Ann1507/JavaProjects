@@ -32,7 +32,8 @@ import javax.jms.*;
  api/course/{id} PUT- обновление сущности
  api/course/{id} DELETE-удаление сущности
   */
-@RestController
+@RestController // Класс CourseAPIController на котором навешена анностация Рест контроллер является реализацией рест сервис.
+//Сервис реализованный этим классом работает внутри серверного приложения WebJava
 @RequestMapping("api/course")
 public class CourseAPIController {
 	
@@ -60,6 +61,7 @@ public class CourseAPIController {
 	private String brokerURL;
 	@RequestMapping(value="/queue",method=RequestMethod.POST)//api/course/queue
 	public Course saveUsingQueue(@RequestBody Course course) throws JMSException {
+		//Этот метод вставляет в очередm ActiveMQ в топик POST сообшение,которое потом будет обработано др.сервисом реализованным в проекте ActiveMQToDatabase
 		ConnectionFactory factory = new ActiveMQConnectionFactory(brokerURL);//создаем фабрику соединений с сервером очередей сообщений
 		Connection connection = factory.createConnection();//создаем соединение с сервером очер.сообщ.
 		connection.start();// открываем соединение

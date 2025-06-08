@@ -33,7 +33,7 @@ public class Course implements Comparable<Course> {
 	public String toString() {
 		return String.format("%-20s %3d %s",getTitle(),getLength(),getDescription());
 	}
-	@Override
+	/*@Override
 	public int compareTo(Course o) {
 		//задача этого метода сравнить объект this с параметром о,
 		// метод должен вернуть положительное число если  this>o
@@ -43,6 +43,12 @@ public class Course implements Comparable<Course> {
 		//o.getLength()
 		//this.getTitle()
 		return this.getLength()-o.getLength();
-	}
+		
+		
+	}*/
+	@Override
+	public int compareTo(Course o) {
 	
+		return this.getTitle().compareTo(o.getTitle());
+	}
 }
