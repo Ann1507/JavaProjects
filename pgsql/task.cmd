@@ -1,0 +1,1 @@
+cmd /c psql postgresql://postgres:demo@localhost:5432/demo -c "select version();" > result.txt
